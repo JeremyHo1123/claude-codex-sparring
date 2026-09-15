@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+
+# Logs and state created when trying the tool inside this repo
+.sparring/
+sparring/
