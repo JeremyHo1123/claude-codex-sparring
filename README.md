@@ -25,7 +25,7 @@
 
 > Spar with Codex: is the cache layer thread-safe?
 
-Claude reads the relevant code, writes down its position, and hands it to **OpenAI Codex**. Codex **explores your entire project on its own** to find evidence, then replies. Claude verifies the reply, pushes back or concedes, and the two go back and forth until they agree, need your call, or hit the round limit.
+Claude reads the relevant code, writes down its position, and hands it to **OpenAI Codex**. Codex **explores your entire project on its own** to find evidence, then replies. Claude verifies the reply, pushes back or concedes, and the two go back and forth until they agree or need your call. There is no round limit unless you set one.
 
 The whole exchange is recorded in **one Markdown log** that you can open in any editor and watch live.
 
@@ -47,7 +47,7 @@ The idea comes from the cross-model review loop in [ARIS](https://github.com/wan
 | 📝 **One shared log** | Every turn from both sides goes into the same `.md` file. Only the script writes it, so there are no write conflicts |
 | 🧠 **Codex remembers** | Round 1 starts a thread; later rounds continue it with `codex exec resume <thread_id>` |
 | 🧰 **Isolated by default** | Codex's MCP servers and plugins are not loaded: the sandbox can fence in files, but not those tools |
-| 🚦 **Clear stop signals** | Codex ends every reply with `AGREE`, `CONTINUE`, or `NEED_USER`, plus a hard round limit |
+| 🚦 **Clear stop signals** | Codex ends every reply with `AGREE`, `CONTINUE`, or `NEED_USER`; you can also set a round limit |
 | 🔍 **Claude must verify** | Every `path:line` Codex cites gets opened and checked, not taken on faith |
 | 🌐 **Any reply language** | Codex replies in English by default; Claude passes along the language you are using |
 | 🪶 **Zero dependencies** | Python standard library only. No MCP server, database, or background service |
@@ -69,7 +69,7 @@ sequenceDiagram
 
     U->>C: "Spar with Codex about X"
     C->>P: Read the relevant code
-    loop Each round, until AGREE, NEED_USER, or the round limit
+    loop Each round, until AGREE or NEED_USER (or a round limit, if you set one)
         C->>S: ask (this round's message)
         S->>L: Append Claude's message
         S->>X: codex exec (round 1) or codex exec resume (later rounds)

@@ -43,7 +43,7 @@ Ask the user only about what is unclear; otherwise use these defaults:
 | --- | --- |
 | Topic | A one-line summary of the user's request |
 | Project folder | The current working directory |
-| Max rounds | 10. This is a ceiling, not a target: stop as soon as both sides agree, or when the remaining points are minor or need the user's call |
+| Max rounds | No limit: keep going until the discussion converges (Codex replies `AGREE` and you agree too). Stop earlier only when a point needs the user's call. If the user gives a limit (`— rounds: N`), stop there |
 | Reasoning effort | Unset: inherited from `~/.codex/config.toml` (`start` prints the effective value). With `xhigh`, one round can take several minutes; `--effort high` suits most discussions |
 | Reply language | The language the user is speaking with you, e.g. `--reply-language "Traditional Chinese"`; English when unclear |
 | Log file | `<project>/sparring/YYYY-MM-DD-<kebab-slug>.md`. If the project's CLAUDE.md prescribes an output location, follow it; ask the user when unsure |
@@ -95,7 +95,8 @@ Do not accept everything at face value, and do not agree just to end the discuss
 | `UNKNOWN` (no STATUS line) | Treat it as `CONTINUE` and remind Codex to end with a STATUS line |
 | `FAILED` | Read stderr. Retry once for a transient error; if the same error happens twice, stop and tell the user |
 
-Stop at the round limit even without consensus.
+There is no default round limit. If the user set one, stop there even without consensus.
+A deadlock is not convergence: when two consecutive rounds repeat the same disagreement with no new argument or evidence, stop and ask the user with AskUserQuestion instead of looping.
 
 ### 6. Wrap up
 
